@@ -2,6 +2,22 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
 }
+// 加载仓库的密钥配置
+// 存放安卓密钥和配置的项目名称
+def keystoreProject = "AndroidKeystore"
+def keystorePropsName = "juice.properties"
+def keystoreFileName = "juice.jks"
+def keystorePropsPath = "$rootDir.parentFile/$keystoreProject/$keystorePropsName"
+def keystoreFilePath = "$rootDir.parentFile/$keystoreProject/$keystoreFileName"
+//println "安卓密钥配置的路径：${keystorePropsPath}"
+//println "安卓密钥的路径：${keystoreFilePath}"
+
+// 密钥配置
+def keyProps = new Properties()
+def keyPropsFile = rootProject.file(keystorePropsPath)
+if (keyPropsFile.exists()) {
+    keyProps.load(new FileInputStream(keyPropsFile))
+}
 
 android {
     compileSdk 32
@@ -11,15 +27,33 @@ android {
         minSdk 28
         targetSdk 32
         versionCode 1
-        versionName "1.0"
+        versionName "3.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    // 配置打包使用的密钥
+    signingConfigs {
+        juice {
+            keyAlias keyProps['keyAlias']
+            keyPassword keyProps['keyPassword']
+            storeFile file(keystoreFilePath)
+            storePassword keyProps['storePassword']
+        }
     }
 
     buildTypes {
         release {
             minifyEnabled false
+            // 配置签名
+            signingConfig signingConfigs.juice
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            zipAlignEnabled true
+            debuggable false
+            //是否混淆
+            minifyEnabled true
+            //是否去除无效的资源文件
+            shrinkResources true
         }
     }
     compileOptions {
