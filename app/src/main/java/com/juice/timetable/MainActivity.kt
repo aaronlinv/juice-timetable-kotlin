@@ -11,6 +11,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.juice.timetable.data.source.local.JuiceDatabase
 import com.juice.timetable.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -53,5 +54,11 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // 关闭数据库
+        JuiceDatabase.getDatabase(this).close()
     }
 }

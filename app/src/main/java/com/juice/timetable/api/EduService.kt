@@ -15,7 +15,18 @@ import retrofit2.http.*
  *     version: 1.0
  * </pre>
  */
+const val URL_ONE_WEEK = "kb/zkb_xs.asp"
+const val URL_WHOLE_WEEK = "kb/kb_xs.asp"
+
 interface EduService {
+    // 动态获取指定 url 内容
+    @GET()
+    suspend fun eduUrl(
+        @Url url: String,
+        @Header("Cookie") cookies: String,
+        @QueryMap queryMap: Map<String, String>
+    ): Response<ResponseBody>
+
     // 首页 以获取 cookie
     @GET("default.asp")
     suspend fun homePage(): Response<ResponseBody>

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.juice.timetable.api.URL_ONE_WEEK
 import com.juice.timetable.databinding.FragmentHomeBinding
 import com.juice.timetable.repo.EduRepository
 import kotlinx.coroutines.CoroutineScope
@@ -47,12 +48,16 @@ class HomeFragment : Fragment() {
 
         binding.textHome.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
-                val cookies = eduRepository.login(
-                    "",
-                    "",
-                    requireContext()
-                )
-                println("Cookie 结果：$cookies")
+
+                try {
+                    val queryMap = mapOf("week1" to "8")
+                    val oneWeek = eduRepository.url(URL_ONE_WEEK, queryMap, requireContext());
+                    println(oneWeek)
+                } catch (e: Exception) {
+                    println(e)
+                }
+                // val wholeWeek = eduRepository.wholeWeek()
+                // println(wholeWeek)
             }
         }
     }

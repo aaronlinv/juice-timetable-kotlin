@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import com.juice.timetable.api.EduService
+import com.juice.timetable.data.source.local.JuiceDatabase
 import com.juice.timetable.utils.CaptchaUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,6 +23,62 @@ class EduRepository {
 
     private val eduService: EduService = EduService.create()
 
+    // 根据 url 获取其内容（Cookie失效，自动重试） 无需传入参数
+    suspend fun url(url: String, context: Context): String {
+        return url(url, emptyMap(), context)
+    }
+
+    // 根据 url 获取其内容（Cookie失效，自动重试）
+    suspend fun url(url: String, queryMap: Map<String, String>, context: Context): String {
+        return withContext(Dispatchers.IO) {
+            val db = JuiceDatabase.getDatabase(context)
+            val stuInfoRepository = StuInfoRepository(db)
+
+            val stuInfo = stuInfoRepository.get() ?: throw Exception("数据库中无账号数据，请重新登录")
+            // 获取 cookies
+            val cookies: String = stuInfo.cookies
+
+            // cookie 有效，直接访问 url 获取内容
+            if (cookies.isNotEmpty()) {
+                try {
+                    return@withContext url(url, cookies, queryMap)
+                } catch (e: Exception) {
+                    Log.d(TAG, "本地Cookie不可用，开始模拟登录获取 cookie")
+                }
+            }
+
+            // 重新获取登录 cookies
+            val accessCookies = login(stuInfo.stuID.toString(), stuInfo.eduPassword, context)
+            // 更新 Cookie
+            stuInfo.cookies = accessCookies
+            stuInfoRepository.update(stuInfo)
+
+            return@withContext url(url, accessCookies, queryMap)
+        }
+    }
+
+    // 根据 url 获取内容
+    private suspend fun url(
+        url: String,
+        cookies: String,
+        queryMap: Map<String, String>
+    ): String {
+        return withContext(Dispatchers.IO) {
+            val response = eduService.eduUrl(url, cookies, queryMap)
+            if (response.body() == null) {
+                throw Exception("登录响应体为 null")
+            }
+            val result = response.body()!!.string()
+            if (result.isEmpty()) {
+                throw Exception("登录响应体为空")
+            } else if (result.contains("出错提示") || result.contains("New Document")) {
+                throw Exception("登录失败，需要重新获取Cookie")
+            }
+            return@withContext result
+        }
+    }
+
+    // 登录获取身份 Cookie
     suspend fun login(
         stuId: String,
         stuPassword: String,
