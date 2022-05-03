@@ -20,6 +20,9 @@
         <!--Android 5.x开始需要把颜色设置透明，否则导航栏会呈现系统默认的浅灰色-->
         <item name="android:statusBarColor">@android:color/transparent</item>
 
+        <!--设置状态栏文字为浅色模式-->
+        <item name="android:windowLightStatusBar">true</item>
+
         <!-- Customize your theme here. -->
     </style>
 
