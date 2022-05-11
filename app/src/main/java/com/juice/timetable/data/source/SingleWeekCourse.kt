@@ -3,7 +3,7 @@ package com.juice.timetable.data.source
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "single_week_course")
 class SingleWeekCourse {
     @PrimaryKey(autoGenerate = true)
     var onlyID: Int? = null

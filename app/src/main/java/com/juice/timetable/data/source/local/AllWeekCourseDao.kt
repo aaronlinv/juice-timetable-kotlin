@@ -11,12 +11,12 @@ interface AllWeekCourseDao {
     @Insert
     fun insertAllWeekCourse(courses: List<Course>)
 
-    @Query("Delete from Course")
+    @Query("Delete from course")
     fun deleteAllWeekCourse()
 
-    @Query("Select * from Course")
+    @Query("Select * from course")
     fun allWeekCourseLive(): LiveData<List<Course>>
 
-    @Query("Select * from Course")
+    @Query("Select * from course")
     fun allWeekCourse(): List<Course>
 }

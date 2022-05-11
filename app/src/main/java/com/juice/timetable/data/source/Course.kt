@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey
  * version: 1.0
 </pre> *
  */
-@Entity
+@Entity(tableName = "course")
 class Course {
     var couID: Long? = null
 
