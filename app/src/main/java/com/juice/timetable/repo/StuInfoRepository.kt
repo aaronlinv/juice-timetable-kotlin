@@ -24,7 +24,7 @@ class StuInfoRepository(private val db: JuiceDatabase) {
     }
 
     // 暴露获得 LiveData 的方法
-    fun getAllMyData(): LiveData<StuInfo> {
+    fun getLiveData(): LiveData<StuInfo> {
         return stuInfo
     }
 
