@@ -68,7 +68,7 @@ class ParseSingleWeekTest {
          *
          * @return String
          */
-        private val csCourses: String
+        val csCourses: String
             get() = """
 <META NAME="ROBOTS" CONTENT="NOINDEX,NOFOLLOW">
 <META HTTP-EQUIV="pragma" CONTENT="no-cache">

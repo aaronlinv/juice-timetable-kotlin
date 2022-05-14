@@ -28,6 +28,10 @@ class AllWeekCourseRepository(private val db: JuiceDatabase) {
         return allWeekCourse
     }
 
+    fun getAll(): List<Course> {
+        return db.allWeekCourseDao().allWeekCourse()
+    }
+
     fun deleteAll() {
         return db.allWeekCourseDao().deleteAllWeekCourse()
     }
