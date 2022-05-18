@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import com.juice.timetable.api.EduService
+import com.juice.timetable.data.source.StuInfo
 import com.juice.timetable.data.source.local.JuiceDatabase
 import com.juice.timetable.utils.CaptchaUtils
 import kotlinx.coroutines.Dispatchers
@@ -46,14 +47,25 @@ class EduRepository {
                     Log.d(TAG, "本地Cookie不可用，开始模拟登录获取 cookie")
                 }
             }
+            val accessCookies = loginAndUpdateStuInfo(stuInfo, context, stuInfoRepository)
 
+
+            return@withContext url(url, accessCookies, queryMap)
+        }
+    }
+
+    suspend fun loginAndUpdateStuInfo(
+        stuInfo: StuInfo,
+        context: Context,
+        stuInfoRepository: StuInfoRepository
+    ): String {
+        return withContext(Dispatchers.IO) {
             // 重新获取登录 cookies
             val accessCookies = login(stuInfo.stuID.toString(), stuInfo.eduPassword, context)
             // 更新 Cookie
             stuInfo.cookies = accessCookies
             stuInfoRepository.update(stuInfo)
-
-            return@withContext url(url, accessCookies, queryMap)
+            return@withContext accessCookies
         }
     }
 

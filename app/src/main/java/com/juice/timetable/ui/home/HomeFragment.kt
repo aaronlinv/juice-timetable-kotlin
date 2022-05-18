@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.juice.timetable.api.URL_ONE_WEEK
 import com.juice.timetable.databinding.FragmentHomeBinding
 import com.juice.timetable.repo.EduRepository
+import com.juice.timetable.ui.login.LoginViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,7 +32,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+            ViewModelProvider(this).get(LoginViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root

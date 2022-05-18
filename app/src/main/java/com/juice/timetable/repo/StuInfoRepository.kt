@@ -3,6 +3,8 @@ package com.juice.timetable.repo
 import androidx.lifecycle.LiveData
 import com.juice.timetable.data.source.StuInfo
 import com.juice.timetable.data.source.local.JuiceDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * <pre>
@@ -28,8 +30,10 @@ class StuInfoRepository(private val db: JuiceDatabase) {
         return stuInfo
     }
 
-    fun get(): StuInfo? {
-        return db.stuInfoDao().getStuInfo()
+    suspend fun get(): StuInfo? {
+        return withContext(Dispatchers.IO) {
+            db.stuInfoDao().getStuInfo()
+        }
     }
 
     fun deleteAll() {

@@ -66,7 +66,9 @@ android {
     }
     buildFeatures {
         viewBinding true
+        dataBinding true
     }
+
 }
 
 dependencies {
@@ -93,4 +95,9 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     implementation 'org.jsoup:jsoup:1.13.1'
+
+    implementation 'com.github.GrenderG:Toasty:1.4.2'
+    // https://mvnrepository.com/artifact/com.dyhdyh.loadingbar/loadingbar
+    implementation 'com.dyhdyh.loadingbar:loadingbar:1.4.9'
+
 }

@@ -10,4 +10,6 @@
     <color name="juice">#F8A732</color>
     <color name="light_juice">#FFD08B</color>
     <color name="light_white">#F5F5F5</color>
+    <color name="transparent">#00000000</color>
+
 </resources>
