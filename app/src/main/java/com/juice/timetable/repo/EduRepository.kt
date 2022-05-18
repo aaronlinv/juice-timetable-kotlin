@@ -5,10 +5,12 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import com.juice.timetable.api.EduService
+import com.juice.timetable.data.source.StuInfo
 import com.juice.timetable.data.source.local.JuiceDatabase
 import com.juice.timetable.utils.CaptchaUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.net.UnknownHostException
 
 /**
  * <pre>
@@ -52,8 +54,30 @@ class EduRepository {
             // 更新 Cookie
             stuInfo.cookies = accessCookies
             stuInfoRepository.update(stuInfo)
-
             return@withContext url(url, accessCookies, queryMap)
+        }
+    }
+
+    suspend fun loginAndUpdateStuInfo(
+        stuInfo: StuInfo,
+        context: Context,
+        stuInfoRepository: StuInfoRepository
+    ): String {
+        return withContext(Dispatchers.IO) {
+            // 重新获取登录 cookies
+            var accessCookies = ""
+            try {
+                accessCookies = login(stuInfo.stuID.toString(), stuInfo.eduPassword, context)
+            } catch (e: Exception) {
+                if (e is UnknownHostException) {
+                    throw Exception("网络不太好，检查一下网络吧")
+                }
+                throw  e
+            }
+            // 更新 Cookie
+            stuInfo.cookies = accessCookies
+            stuInfoRepository.update(stuInfo)
+            return@withContext accessCookies
         }
     }
 

@@ -3,6 +3,7 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
+        maven { url "https://jitpack.io" }
     }
 }
 dependencyResolutionManagement {
@@ -10,6 +11,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // com.dyhdyh.loadingbar:loadingbar:1.4.9 需要 jcenter 才可以导入
+        jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 rootProject.name = "juice-timetable-kotlin"
