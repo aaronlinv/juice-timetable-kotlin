@@ -6,11 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.juice.timetable.api.URL_ONE_WEEK
 import com.juice.timetable.databinding.FragmentHomeBinding
 import com.juice.timetable.repo.EduRepository
 import com.juice.timetable.ui.login.LoginViewModel
+import com.juice.timetable.utils.LogUtils
+import com.juice.timetable.viewmodel.StuInfoViewModel
+import com.juice.timetable.viewmodel.StuInfoViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,6 +23,12 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
 
     private val eduRepository = EduRepository()
+
+    private val stuInfoViewModel: StuInfoViewModel by activityViewModels {
+        StuInfoViewModelFactory(
+            requireActivity().application
+        )
+    }
 
     private val TAG = "HomeFragment"
 
@@ -61,6 +71,7 @@ class HomeFragment : Fragment() {
                 // println(wholeWeek)
             }
         }
+        LogUtils.i("fragment stuInfoViewModel --> $stuInfoViewModel")
     }
 
     override fun onDestroyView() {

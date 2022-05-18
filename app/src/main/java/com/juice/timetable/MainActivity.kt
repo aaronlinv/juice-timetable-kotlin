@@ -2,10 +2,9 @@ package com.juice.timetable
 
 import android.os.Bundle
 import android.view.Menu
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -27,7 +26,18 @@ class MainActivity : AppCompatActivity() {
     // private val MainActivity.mainViewModel1: MainViewModel
     //     get() = ViewModelProvider(this).get(MainViewModel::class.java)
 
-    private lateinit var stuInfoViewModel: StuInfoViewModel
+    // private lateinit var stuInfoViewModel: StuInfoViewModel
+
+
+    // val stuInfoViewModel by viewModels<StuInfoViewModel>()
+    // 初始化 ViewModel 的一种方式
+    // https://developer.android.com/topic/libraries/architecture/viewmodel#sharing
+    // https://stackoverflow.com/a/67811504/19141665
+    private val stuInfoViewModel: StuInfoViewModel by viewModels {
+        StuInfoViewModelFactory(
+            application
+        )
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,19 +74,19 @@ class MainActivity : AppCompatActivity() {
         // }
         // navController.navigate(R.id.nav_login)
 
-        val myViewModelFactory = StuInfoViewModelFactory(application)
-        stuInfoViewModel =
-            ViewModelProvider(this, myViewModelFactory)[StuInfoViewModel::class.java]
+        // val myViewModelFactory = StuInfoViewModelFactory(application)
+        // stuInfoViewModel =
+        //     ViewModelProvider(this, myViewModelFactory)[StuInfoViewModel::class.java]
         val stuInfo = stuInfoViewModel.stuInfo.observe(
             this
         ) {
             println("stuInfo --> $it")
             if (it != null) {
-                // navController.navigate(R.id.action_nav_home_to_nav_login)
-                findNavController(
-                    this,
-                    R.id.nav_host_fragment_content_main
-                ).navigate(R.id.action_nav_home_to_nav_login)
+                navController.navigate(R.id.action_nav_home_to_nav_login)
+                // findNavController(
+                //     this,
+                //     R.id.nav_host_fragment_content_main
+                // ).navigate(R.id.action_nav_home_to_nav_login)
             }
         }
     }
