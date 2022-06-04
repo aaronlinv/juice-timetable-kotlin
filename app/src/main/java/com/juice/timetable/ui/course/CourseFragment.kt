@@ -1,4 +1,4 @@
-package com.juice.timetable.ui.home
+package com.juice.timetable.ui.course
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,7 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment() {
+class CourseFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
 
     private lateinit var eduRepository: EduRepository
@@ -30,8 +30,6 @@ class HomeFragment : Fragment() {
         )
     }
 
-    private val TAG = "HomeFragment"
-
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -41,14 +39,14 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
+        val courseViewModel =
             ViewModelProvider(this).get(LoginViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
+        courseViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root
