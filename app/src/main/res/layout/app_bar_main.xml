@@ -12,17 +12,28 @@
     <!-- 它会自动的给View增加一个值等于状态栏高度的PaddingTop -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
-        android:fitsSystemWindows="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimaryVariant"
+        android:fitsSystemWindows="true"
         android:theme="@style/Theme.Juicetimetablekotlin.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/Theme.Juicetimetablekotlin.PopupOverlay" />
+            app:popupTheme="@style/Theme.Juicetimetablekotlin.PopupOverlay">
+
+            <com.jaredrummler.materialspinner.MaterialSpinner
+                android:id="@+id/spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                app:ms_background_color="@color/light_white"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 

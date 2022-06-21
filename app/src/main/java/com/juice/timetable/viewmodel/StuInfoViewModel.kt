@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.juice.timetable.data.source.StuInfo
 import com.juice.timetable.data.source.local.JuiceDatabase
 import com.juice.timetable.repo.StuInfoRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class StuInfoViewModel(val app: Application) : ViewModel() {
     private var stuInfoRepository: StuInfoRepository =
@@ -25,15 +27,10 @@ class StuInfoViewModel(val app: Application) : ViewModel() {
     // }
 
 
-    fun getStuInfo(): StuInfo? {
-        var result: StuInfo? = null
-        viewModelScope.launch {
-            val data = stuInfoRepository.get()
-            if (data != null) {
-                result = data
-            }
+    suspend fun getStuInfo(): StuInfo? {
+        return withContext(Dispatchers.IO) {
+            stuInfoRepository.get()
         }
-        return result
     }
 
     fun add(stuInfo: StuInfo) {
@@ -42,8 +39,8 @@ class StuInfoViewModel(val app: Application) : ViewModel() {
         }
     }
 
-    fun deleteAll() {
-        viewModelScope.launch {
+    suspend fun deleteAll() {
+        withContext(Dispatchers.IO) {
             stuInfoRepository.deleteAll()
         }
     }

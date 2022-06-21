@@ -36,11 +36,16 @@ class StuInfoRepository(private val db: JuiceDatabase) {
         }
     }
 
-    fun deleteAll() {
-        return db.stuInfoDao().deleteStuInfo()
+    suspend fun deleteAll() {
+        withContext(Dispatchers.IO) {
+            db.stuInfoDao().deleteStuInfo()
+        }
     }
 
-    fun update(stuInfo: StuInfo) {
-        return db.stuInfoDao().updateStuInfo(stuInfo)
+    suspend fun update(stuInfo: StuInfo) {
+        // 检查其他相关的 异步调用避免闪退
+        withContext(Dispatchers.IO) {
+            db.stuInfoDao().updateStuInfo(stuInfo)
+        }
     }
 }

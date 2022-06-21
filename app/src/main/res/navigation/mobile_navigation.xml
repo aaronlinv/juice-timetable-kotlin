@@ -9,12 +9,15 @@
         android:id="@+id/nav_home"
         android:name="com.juice.timetable.ui.course.CourseFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home">
+        tools:layout="@layout/fragment_course">
         <action
             android:id="@+id/action_nav_home_to_nav_login"
             app:destination="@id/nav_login"
             app:popUpTo="@id/nav_home"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_nav_home_to_courseWebViewFragment"
+            app:destination="@id/courseWebViewFragment" />
     </fragment>
 
     <fragment
@@ -33,4 +36,9 @@
         android:name="com.juice.timetable.ui.login.LoginFragment"
         android:label="@string/menu_login"
         tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/courseWebViewFragment"
+        android:name="com.juice.timetable.ui.course.CourseWebViewFragment"
+        android:label="@string/menu_course_web_view"
+        tools:layout="@layout/fragment_course_web_view" />
 </navigation>

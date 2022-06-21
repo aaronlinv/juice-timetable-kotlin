@@ -2,10 +2,11 @@ package com.juice.timetable.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.juice.timetable.data.source.Course
 import com.juice.timetable.data.source.local.JuiceDatabase
 import com.juice.timetable.repo.AllWeekCourseRepository
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class AllWeekCourseViewModel(val app: Application) : ViewModel() {
     private var allWeekCourseRepository: AllWeekCourseRepository =
@@ -13,9 +14,21 @@ class AllWeekCourseViewModel(val app: Application) : ViewModel() {
 
     val allWeekCourse = allWeekCourseRepository.getLiveData()
 
-    fun deleteAll() {
-        viewModelScope.launch {
+    suspend fun deleteAll() {
+        withContext(Dispatchers.IO) {
             allWeekCourseRepository.deleteAll()
+        }
+    }
+
+    suspend fun getAll(): List<Course> {
+        return withContext(Dispatchers.IO) {
+            allWeekCourseRepository.getAll()
+        }
+    }
+
+    suspend fun addAll(courses: List<Course>) {
+        withContext(Dispatchers.IO) {
+            allWeekCourseRepository.add(courses)
         }
     }
 }

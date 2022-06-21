@@ -46,6 +46,10 @@ class EduRepository {
                     return@withContext url(url, cookies, queryMap)
                 } catch (e: Exception) {
                     Log.d(TAG, "本地Cookie不可用，开始模拟登录获取 cookie")
+                    if (e is UnknownHostException) {
+                        throw Exception("网络不太好，检查一下网络吧")
+                    }
+                    // throw  e
                 }
             }
 

@@ -28,5 +28,11 @@ interface SingleWeekCourseDao {
 
     // 删除指定周的课程信息
     @Query("DELETE FROM single_week_course  WHERE inWeek IN (:week)")
-    fun deleteCourseByWeek(week: ArrayList<Int>)
+    fun deleteCourseByWeek(week: Set<Int>)
+
+    @Query("SELECT * FROM single_week_course WHERE dayOfWeek = :dayOfWeek AND InWeek = :week AND couName NOT LIKE '%停课%'")
+    fun getSomeDay(dayOfWeek: Int, week: Int): List<SingleWeekCourse>
+
+    @Query("Select DISTINCT InWeek from single_week_course")
+    fun getWeek(): List<Int>
 }

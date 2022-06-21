@@ -35,4 +35,16 @@ class SingleWeekCourseRepository(private val db: JuiceDatabase) {
     fun deleteAll() {
         return db.singleWeekCourseDao().deleteCourse()
     }
+
+    fun getSomeDay(dayOfWeek: Int, week: Int): List<SingleWeekCourse> {
+        return db.singleWeekCourseDao().getSomeDay(dayOfWeek, week)
+    }
+
+    fun getWeek(): List<Int> {
+        return db.singleWeekCourseDao().getWeek()
+    }
+
+    fun deleteCourseByWeek(deleteWeek: Set<Int>) {
+        return db.singleWeekCourseDao().deleteCourseByWeek(deleteWeek)
+    }
 }

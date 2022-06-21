@@ -11,5 +11,6 @@
     <color name="light_juice">#FFD08B</color>
     <color name="light_white">#F5F5F5</color>
     <color name="transparent">#00000000</color>
+    <color name="toasty_green">#62a565</color>
 
 </resources>

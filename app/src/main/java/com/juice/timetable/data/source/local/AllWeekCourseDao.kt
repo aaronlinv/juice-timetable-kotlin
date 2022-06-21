@@ -3,12 +3,13 @@ package com.juice.timetable.data.source.local
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.juice.timetable.data.source.Course
 
 @Dao
 interface AllWeekCourseDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllWeekCourse(courses: List<Course>)
 
     @Query("Delete from course")

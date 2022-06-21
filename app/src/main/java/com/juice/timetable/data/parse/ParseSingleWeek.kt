@@ -69,7 +69,7 @@ object ParseSingleWeek {
                                     // 去除 [网络教室] 左右的 []
                                     // String couRoom = s1.substring(1, s1.length() - 1);
                                     // 20.10.27 增加了时间 故去掉上面功能，直接显示 [网络教室](19:00)
-                                    LogUtils.i("couRoom --> $couRoom")
+                                    // LogUtils.i("couRoom --> $couRoom")
                                     cou.couRoom = couRoom
                                     val id = td.attr("id")
                                     val dayOfWeek = Integer.valueOf(id.substring(id.length - 1))

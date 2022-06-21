@@ -67,6 +67,14 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         eduRepository = EduRepository()
+
+        // 退出登录，NavController 导航到这里，标识为初次登录
+        CoroutineScope(Dispatchers.IO).launch {
+            requireActivity().dataStore.edit { settings ->
+                settings[INIT_LOGIN_KEY] = true
+            }
+        }
+
         with(binding) {
             stuInfoViewModel.stuInfo.observe(viewLifecycleOwner) {
                 if (it != null) {
@@ -128,7 +136,7 @@ class LoginFragment : Fragment() {
 
                 ToastyUtils.s(requireActivity(), "登录成功")
             } catch (e: Exception) {
-                ToastyUtils.c(requireActivity(), e.message.toString())
+                ToastyUtils.warn(requireActivity(), e.message.toString())
                 // 关闭 loading
                 loadingBar.cancel()
                 return@launch
@@ -147,15 +155,8 @@ class LoginFragment : Fragment() {
             // 显示 ActionBar
             (activity as AppCompatActivity?)?.supportActionBar?.show()
             // 成功就导航到课表页面
-            findNavController(requireView()).popBackStack(R.id.nav_login, true)
-
-            // 设置登录初始化标志
-            CoroutineScope(Dispatchers.IO).launch {
-                requireActivity().dataStore.edit { settings ->
-                    // val currentCounterValue = settings[INIT_LOGIN_KEY] ?: 0
-                    settings[INIT_LOGIN_KEY] = false
-                }
-            }
+            val navController = findNavController(requireView())
+            navController.popBackStack(R.id.nav_home, false);
         }
     }
 
@@ -163,10 +164,13 @@ class LoginFragment : Fragment() {
      * 更新用户账户密码数据
      */
     private fun deleteUserAndEmptyCourse() {
-        // 先删除用户信息
-        stuInfoViewModel.deleteAll()
-        singleWeekCourseViewModel.deleteAll()
-        allWeekCourseViewModel.deleteAll()
+        CoroutineScope(Dispatchers.IO).launch {
+            // 先删除用户信息
+            stuInfoViewModel.deleteAll()
+            singleWeekCourseViewModel.deleteAll()
+            allWeekCourseViewModel.deleteAll()
+
+        }
     }
 
     /**

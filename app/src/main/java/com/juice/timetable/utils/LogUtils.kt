@@ -15,6 +15,7 @@ object LogUtils {
      * @return TAG 信息
      */
     @get:Synchronized
+    @JvmStatic
     private val tAG: String
         get() {
             val tag = StringBuilder()
@@ -36,6 +37,7 @@ object LogUtils {
      *
      * @param text 需要打印的内容
      */
+    @JvmStatic
     @Synchronized
     fun e(text: String) {
         if (IS_DEBUG) {
@@ -50,6 +52,7 @@ object LogUtils {
      *
      * @param text 需要打印的内容
      */
+    @JvmStatic
     @Synchronized
     fun d(text: String) {
         if (IS_DEBUG) {
@@ -64,6 +67,7 @@ object LogUtils {
      *
      * @param text 需要打印的内容
      */
+    @JvmStatic
     @Synchronized
     fun w(text: String) {
         if (IS_DEBUG) {
@@ -78,6 +82,7 @@ object LogUtils {
      *
      * @param text 需要打印的内容
      */
+    @JvmStatic
     @Synchronized
     fun i(text: String) {
         if (IS_DEBUG) {
@@ -92,6 +97,7 @@ object LogUtils {
      *
      * @param json 需要打印的内容
      */
+    @JvmStatic
     @Synchronized
     fun json(json: String?) {
         if (IS_DEBUG) {

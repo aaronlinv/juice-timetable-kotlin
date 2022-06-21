@@ -42,5 +42,9 @@ abstract class JuiceDatabase : RoomDatabase() {
                 instance
             }
         }
+
+        fun close() {
+            INSTANCE?.close()
+        }
     }
 }
