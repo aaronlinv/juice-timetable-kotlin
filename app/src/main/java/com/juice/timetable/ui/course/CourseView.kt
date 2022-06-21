@@ -92,9 +92,8 @@ class CourseView : FrameLayout {
         }
     }
 
-    // todo 当前周
-    // private int mCurrentIndex = Constant.CUR_WEEK;
-    var currentIndex = 0
+    // 当前周
+    var currentIndex = -1
         private set
     var courses: MutableList<Course> = mutableListOf()
     var oneWeekCourses: List<SingleWeekCourse>? = null
@@ -178,8 +177,7 @@ class CourseView : FrameLayout {
              """.trimIndent()
         tv.text = showText
 
-        // todo 彩虹模式随机数
-        // Constant.RAINBOW_MODE_NUM
+        // 彩虹模式随机数
         val backgroundColor = getColor(course.couColor!! + CourseFragment.rainbowModeNum)
         tv.setBackgroundColor(backgroundColor)
 

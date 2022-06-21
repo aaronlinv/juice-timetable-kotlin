@@ -124,13 +124,12 @@ class LoginFragment : Fragment() {
 
             val stuInfo = StuInfo(stuID = sno.toInt(), eduPassword = eduPassword, "")
             try {
-                // todo 优化 Repository 实例化
-                val db = JuiceDatabase.getDatabase(requireContext())
+                val db = JuiceDatabase.getDatabase(requireActivity())
                 val stuInfoRepository = StuInfoRepository(db)
 
                 eduRepository.loginAndUpdateStuInfo(
                     stuInfo,
-                    requireContext(),
+                    requireActivity(),
                     stuInfoRepository
                 )
 
@@ -177,7 +176,7 @@ class LoginFragment : Fragment() {
      * 对话框的一个实现
      */
     private fun onDialogClick(v: View) {
-        AlertDialog.Builder(requireContext())
+        AlertDialog.Builder(requireActivity())
             .setTitle("用户条款")
             .setMessage(R.string.user_agreements)
             .setPositiveButton(

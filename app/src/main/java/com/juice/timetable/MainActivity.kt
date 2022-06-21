@@ -78,38 +78,13 @@ val ENABLE_CHECK_VERSION = booleanPreferencesKey("enable_check_version")
  */
 val LAST_CHECK_VERSION_DATE = stringPreferencesKey("last_check_version_date")
 
-/**
- * 存在新版本
- */
-val NEW_VERSION_EXIST = booleanPreferencesKey("new_version_exist")
-
 class MainActivity : BaseActivity() {
     // 伴生对象，类似 Java 静态成员变量
     companion object {
-
-
-        /**
-         * 第一周周一，示例：2016-08-16
-         */
-        var firstWeekMon: String = ""
-
         /**
          * 打开应用首次刷新课表
          */
         var refreshDate = true
-
-        /**
-         * 是否开启慕课显示
-         */
-        var enableShowMooc = true
-
-        /**
-         * 初始化配置
-         */
-        private fun initConfig() {
-            // todo
-            // Constant.ENABLE_SHOW_MOOC = PreferencesUtils.getBoolean(Constant.PREF_ENABLE_SHOW_MOOC, true)
-        }
     }
 
     private lateinit var appBarConfiguration: AppBarConfiguration

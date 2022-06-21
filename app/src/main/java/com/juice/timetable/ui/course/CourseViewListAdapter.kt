@@ -15,9 +15,7 @@ import com.juice.timetable.data.source.Course
 import com.juice.timetable.data.source.CourseViewBean
 import com.juice.timetable.utils.DisplayUtils.dip2px
 import com.juice.timetable.utils.LogUtils
-import com.juice.timetable.utils.LogUtils.d
 import java.time.LocalDate
-import java.util.*
 
 /**
  * <pre>
@@ -27,7 +25,7 @@ import java.util.*
  * version: 1.0
 </pre> *
  */
-open class CourseViewListAdapter constructor() :
+open class CourseViewListAdapter :
     ListAdapter<CourseViewBean, CourseViewHolder>(object :
         DiffUtil.ItemCallback<CourseViewBean>() {
         override fun areItemsTheSame(oldItem: CourseViewBean, newItem: CourseViewBean): Boolean {
@@ -38,10 +36,15 @@ open class CourseViewListAdapter constructor() :
             return oldItem.currentIndex == newItem.currentIndex
         }
     }) {
+    companion object {
+        val WEEK_SINGLE = arrayOf("一", "二", "三", "四", "五", "六", "日")
+    }
+
     private val NODE_WIDTH = 28
     private val WEEK_TEXT_SIZE = 12
     private val NODE_TEXT_SIZE = 11
     var itemClickListener: OnItemClickListener? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseViewHolder {
         return CourseViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.pager_course_view, parent, false)
@@ -51,20 +54,22 @@ open class CourseViewListAdapter constructor() :
     override fun onBindViewHolder(holder: CourseViewHolder, position: Int) {
         val courseView: CourseView = holder.itemView.findViewById(R.id.course_view)
         val item = getItem(position)
-        d("onBindViewHolder item -- > $item")
-        courseView.setCurrentIndex(item!!.currentIndex)
+
+        courseView.setCurrentIndex(item.currentIndex)
         courseView.set = item.weekSet.toHashSet()
         courseView.courses = item.allWeekCourse.toMutableList()
         courseView.oneWeekCourses = item.singleWeekCourse
-        /*        // 测试
-        Course course1 = new Course();
-        course1.setCouName("测试万一有小可怜，选了2门慕课");
-        course1.setCouTeacher("超新尔雅");
-        item.getMoocCourse().add(course1);*/
 
-        // 慕课处理 存在慕课 并且开启了慕课显示 就显示慕课界面 否者Gone掉
+        // 多慕课测试
+        // val testMoocCourse = Course();
+        // testMoocCourse.couName = "测试万一有小可怜，选了2门慕课"
+        // testMoocCourse.couTeacher = "超新尔雅"
+        // item.moocCourse.add(testMoocCourse)
+
+        // 慕课处理 存在慕课 并且开启了慕课显示 就显示慕课界面 否者 GONE 掉
         val llMooc = holder.itemView.findViewById<LinearLayout>(R.id.ll_mooc)
         val tvMooc = holder.itemView.findViewById<TextView>(R.id.tv_mooc)
+
         // 先清空 放置多次刷新堆积
         tvMooc.text = ""
         if (item.moocCourse.isNotEmpty() && CourseFragment.enableShowMooc) {
@@ -83,35 +88,17 @@ open class CourseViewListAdapter constructor() :
             llMooc.visibility = View.GONE
         }
 
-        // 不重置，在切换不同周 会出现重叠情况
+        // 不重置，在切换不同周会出现重叠情况
         courseView.resetView()
+
         // 获取第一周星期一的时间
-        // todo
-        // long firstWeekMondayTime = PreferencesUtils.getLong(Constant.PREF_FIRST_WEEK_MONDAY, -1);
         val firstWeekMon = item.firstWeekMon;
         LogUtils.d("第一周星期一：$firstWeekMon")
 
-        val firstWeekMondayTime = System.currentTimeMillis()
-
         // 计算时间
-        val calendar = Calendar.getInstance()
         val now = LocalDate.now();
-        // 获取今天的日
-        // val curDay = calendar[Calendar.DATE]
-
-        // 如果还没到第一周的星期一则隐藏月份和日期
-        val nowTimeInMillis = calendar.timeInMillis
-
-        calendar.timeInMillis = firstWeekMondayTime
-
         // 加上相隔的周
         val weekGap = (item.currentIndex - 1) * 7L
-        // val weekGap = firstWeekMon.plusDays((item.currentIndex - 1) * 7L)
-
-        // calendar.add(Calendar.DATE, (item.currentIndex - 1) * 7)
-        // val month = calendar[Calendar.MONTH] + 1
-
-        // val day = calendar[Calendar.DATE]
 
         // 星期栏
         val week = holder.itemView.findViewById<LinearLayout>(R.id.ll_week)
@@ -126,9 +113,10 @@ open class CourseViewListAdapter constructor() :
 
             val targetDate = firstWeekMon.plusDays(weekGap + i)
             val month = targetDate.month.value;
+
             // 获取当前天的 日（不可直接累加 会出现5月32号的情况）
             val day = targetDate.dayOfMonth
-            d("第" + item.currentIndex + "周 周一为 -- > " + month + "." + day)
+            LogUtils.d("第" + item.currentIndex + "周 周一为 -- > " + month + "." + day)
 
             if (i == -1) {
                 // 初始化月份
@@ -146,15 +134,12 @@ open class CourseViewListAdapter constructor() :
                 params.weight = 10f
                 textView.textSize = WEEK_TEXT_SIZE.toFloat()
 
-                // val weekDay = getWeekDay(calendar, day, i)
-
                 val weekStr = StringBuilder()
                 weekStr.append(WEEK_SINGLE[i])
                 weekStr.append("\n").append(day)
                 textView.text = weekStr
+
                 // 给今天 加深背景色 本周且为当日
-                // todo
-                // if (Constant.CUR_WEEK == item.getCurrentIndex() && weekDay == curDay) {
                 if (now == targetDate) {
                     textView.setBackgroundColor(-0x222223)
                 }
@@ -170,10 +155,11 @@ open class CourseViewListAdapter constructor() :
         // 节数栏使用绝对高度
         val heightPixels = holder.itemView.resources.displayMetrics.heightPixels
         val nodeHeight = (heightPixels - dip2px) / 11
-        d("nodeHeight == >$nodeHeight")
+        LogUtils.d("nodeHeight == >$nodeHeight")
 
-        // 清除已有View 否则会导致切换时一直叠加新的View
+        // 清除已有 View 否则会导致切换时一直叠加新的 View
         node.removeAllViews()
+
         //  课程节数栏
         for (i in 1..11) {
             val textView = TextView(holder.itemView.context.applicationContext)
@@ -199,26 +185,6 @@ open class CourseViewListAdapter constructor() :
         }
     }
 
-    /**
-     * 获取当前天的 日（不可直接累加 会出现5月32号的情况）
-     *
-     * @param calendar
-     * @param day
-     * @param index
-     * @return
-     */
-    private fun getWeekDay(calendar: Calendar, day: Int, index: Int): Int {
-        // 大于28 才需要判断
-        if (day + index <= 28) {
-            return day + index
-        }
-        // 传入的是引用 不能直接用，修改会影响传入的Calendar对象
-        val cal = Calendar.getInstance()
-        cal.timeInMillis = calendar.timeInMillis
-        cal.add(Calendar.DATE, index)
-        return cal[Calendar.DATE]
-    }
-
     override fun getItemCount(): Int {
         return currentList.size
     }
@@ -228,10 +194,6 @@ open class CourseViewListAdapter constructor() :
      */
     interface OnItemClickListener {
         fun onClick(cou: Course, conflictList: List<Course>)
-    }
-
-    companion object {
-        val WEEK_SINGLE = arrayOf("一", "二", "三", "四", "五", "六", "日")
     }
 }
 

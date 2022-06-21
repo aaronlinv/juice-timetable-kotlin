@@ -1,7 +1,6 @@
 package com.juice.timetable.ui.course
 
 import android.annotation.SuppressLint
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -9,7 +8,6 @@ import android.os.Bundle
 import android.view.*
 import android.widget.PopupWindow
 import android.widget.Switch
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.datastore.preferences.core.edit
 import androidx.fragment.app.Fragment
@@ -56,14 +54,17 @@ class CourseFragment : Fragment() {
          * 本地不存在 返回-1
          */
         var curWeek = -1
+
+        /*
+        第一周周一，示例：2016-08-16
+         */
         var firstWeekMon = ""
         var enableShowMooc = false
         var enableRainbowMode = false
         var rainbowModeNum = 0
         var enableCheckVersion = true
-        var lastCheckVersionDate = LocalDate.now().toString()
+        var lastCheckVersionDate: String? = null
         var initLoginKey = false
-        var newVersionExist = false
     }
 
     private var _binding: FragmentCourseBinding? = null
@@ -91,33 +92,21 @@ class CourseFragment : Fragment() {
     private val mCourseViewBeanList: MutableList<CourseViewBean> = ArrayList()
     private var mCurViewPagerNum = 0
     private lateinit var mSpinner: MaterialSpinner
-    private var id: String? = null
-    private var info: String? = null
-
-
     private lateinit var eduRepository: EduRepository
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private var version: String? = null
+    private var description: String? = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // val courseViewModel =
-        //     ViewModelProvider(this)[LoginViewModel::class.java]
-
         _binding = FragmentCourseBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-        // val textView: TextView = binding.textHome
-        // courseViewModel.text.observe(viewLifecycleOwner) {
-        //     textView.text = it
-        // }
-
-        // ---
 
         vpCourse = binding.vpCourse
         mSlRefresh = binding.slRefresh
@@ -152,14 +141,11 @@ class CourseFragment : Fragment() {
             }.firstOrNull()
 
             requireActivity().dataStore.data.map {
-                lastCheckVersionDate = it[LAST_CHECK_VERSION_DATE] ?: LocalDate.now().toString()
+                lastCheckVersionDate = it[LAST_CHECK_VERSION_DATE]
             }.firstOrNull()
 
             requireActivity().dataStore.data.map {
                 initLoginKey = it[INIT_LOGIN_KEY] ?: true
-            }.firstOrNull()
-            requireActivity().dataStore.data.map {
-                newVersionExist = it[NEW_VERSION_EXIST] ?: false
             }.firstOrNull()
 
             LogUtils.d("读取 DataStore 的当前周，并初始化静态变量：${curWeek}")
@@ -169,14 +155,11 @@ class CourseFragment : Fragment() {
             LogUtils.d("读取 DataStore 的是否彩虹模式随机变量，并初始化静态变量：${rainbowModeNum}")
             LogUtils.d("读取 DataStore 的是否自动检查更新，并初始化静态变量：${enableCheckVersion}")
             LogUtils.d("读取 DataStore 的是否上次检查更新时间，并初始化静态变量：${lastCheckVersionDate}")
-            LogUtils.d("读取 DataStore 的是否首次登录，并初始化静态变量：${lastCheckVersionDate}")
-            LogUtils.d("读取 DataStore 的是否存在新版本，并初始化静态变量：${newVersionExist}")
         }
 
         initCurrentWeek()
         initView()
         initCourse()
-
 
         return root
     }
@@ -194,9 +177,7 @@ class CourseFragment : Fragment() {
 
         eduRepository = EduRepository()
 
-        handler()
 
-        // todo
         // 每次到这个界面都 获取数据并刷新界面
         if (MainActivity.refreshDate) {
             // 刷新动画
@@ -204,7 +185,6 @@ class CourseFragment : Fragment() {
             refreshData()
             // 设置为 false
             MainActivity.refreshDate = false
-
         }
 
         // 首次登录
@@ -222,17 +202,12 @@ class CourseFragment : Fragment() {
                 }
             }
         }
-
-
         initEvent()
-        // // todo 暂时
-        // updateCourse()
     }
 
     override fun onResume() {
         super.onResume()
         // 设置为可见 切换到其他界面会隐藏，所以这样要设置回可见
-        //todo
         mSpinner.visibility = View.VISIBLE
     }
 
@@ -246,7 +221,6 @@ class CourseFragment : Fragment() {
         mSpinner.visibility = View.INVISIBLE
     }
 
-    // todo
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.course_bar, menu)
@@ -254,85 +228,96 @@ class CourseFragment : Fragment() {
 
     /**
      * 自动检查更新，提示
+     * 1. 开启检查，每次启动都检查更行
+     * 2. 开启检查，并且忽略过，需要判断是否超过 7 天，超过则检查
+     * 3. 关闭检查，永不检查
      */
     private fun checkUpdate() {
+        if (!enableCheckVersion) {
+            return
+        }
 
-        if (enableCheckVersion) {
+        // 忽略过
+        if (lastCheckVersionDate != null) {
             // 默认 7 天检查一次
             val date = LocalDate.parse(lastCheckVersionDate).plusDays(7)
-            if (date.isAfter(LocalDate.now())) {
-                CoroutineScope(Dispatchers.Main).launch {
-                    withContext(Dispatchers.IO) {
-                        try {
-                            LogUtils.d("爬虫线程启动")
-                            val str: String = ParseVersion.getSource(URI_COOL_APK)
-                            id = ParseVersion.getVersion(str)
-                            info = ParseVersion.getVersionInfo(str)
-                            LogUtils.d("酷安 id -->$id")
-                            LogUtils.d("酷安 info -->$info")
-                        } catch (e: Exception) {
-                            LogUtils.e("获取 酷安版本失败")
-                            e.printStackTrace()
-                        }
+            if (LocalDate.now().isBefore(date)) {
+                return
+            }
+        }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.IO) {
+                try {
+                    LogUtils.d("爬虫线程启动")
+                    val str: String = ParseVersion.getSource(URI_COOL_APK)
+
+                    version = ParseVersion.getVersion(str)
+                    description = ParseVersion.getVersionInfo(str)
+
+                    LogUtils.d("酷安 id --> $version")
+                    LogUtils.d("酷安 info --> $description")
+                } catch (e: Exception) {
+                    LogUtils.e("获取酷安版本失败")
+                    e.printStackTrace()
+                }
+            }
+
+            val currVersion = getVersionCode(requireActivity())
+            if (version != currVersion) {
+                binding.tvCheckIn.visibility = View.VISIBLE
+            }
+
+            // 更新检查
+            binding.tvCheckIn.setOnClickListener {
+                SweetAlertDialog(requireActivity(), SweetAlertDialog.NORMAL_TYPE)
+                    .setTitleText(getString(R.string.new_version_dialog_title))
+                    .setContentText(description?.replace(" ", "<br>"))
+                    .setCancelText(resources.getString(R.string.no_quit_dialog_title))
+                    .setConfirmText(resources.getString(R.string.ok_quit_dialog_title))
+                    .setConfirmClickListener { sDialog ->
+                        val uri = Uri.parse(URI_COOL_APK)
+                        val intent = Intent(Intent.ACTION_VIEW, uri)
+                        startActivity(intent)
+                        sDialog.dismissWithAnimation()
                     }
-                    val currVersion = getVersionCode(requireActivity())
-                    if (id != currVersion) {
-                        binding.tvCheckIn.visibility = View.VISIBLE
+                    .showCancelButton(true)
+                    .setCancelClickListener { sDialog -> sDialog.cancel() }
+                    .setNeutralText("忽略")
+                    .setNeutralClickListener { sDialog ->
+                        binding.tvCheckIn.visibility = View.GONE
+                        sDialog.dismissWithAnimation()
 
                         CoroutineScope(Dispatchers.IO).launch {
                             requireActivity().dataStore.edit { settings ->
-                                settings[NEW_VERSION_EXIST] = true
-                                newVersionExist = true
+                                lastCheckVersionDate =
+                                    LocalDate.now().toString()
+                                settings[LAST_CHECK_VERSION_DATE] = lastCheckVersionDate!!
                             }
-                            LogUtils.d("dataStore 设置是否有新版本：$newVersionExist")
+                            LogUtils.d("忽略版本：dataStore 设置新的检查时间：$lastCheckVersionDate")
                         }
                     }
-                }
-
-                binding.tvCheckIn.setOnClickListener(View.OnClickListener {
-                    AlertDialog.Builder(requireActivity())
-                        .setTitle(getString(R.string.new_version_dialog_title))
-                        .setMessage(info!!.replace(" ", "\n"))
-                        .setPositiveButton(
-                            R.string.ok_quit_dialog_title,
-                            DialogInterface.OnClickListener { dialog, which ->
-                                val uri = Uri.parse(URI_COOL_APK)
-                                val intent = Intent(Intent.ACTION_VIEW, uri)
-                                startActivity(intent)
-                            })
-                        .setNegativeButton(
-                            R.string.no_quit_dialog_title,
-                            DialogInterface.OnClickListener { dialog, which ->
-                                // todo 保存更新时间
-                                // binding.tvCheckIn.visibility = View.GONE
-                                // TimeUtils.saveSevenTime()
-                            })
-                        .create()
-                        .show()
-                })
+                    .show()
             }
         }
     }
 
+    // todo 初次向导
     private fun firstGuide() {
-        // todo
-/*        val showGuide: Boolean = PreferencesUtils.getBoolean(Constant.FIRST_LOGIN_GUIDE, false)
-        if (showGuide) {
-            LogUtils.d("显示首次登录 引导提示")
-            // 显示引导
-            showGuideView()
-            // 首次登录引导显示一次，然后就置为false，在设置中可重置
-            PreferencesUtils.putBoolean(Constant.FIRST_LOGIN_GUIDE, false)
-        }*/
+        /*        val showGuide: Boolean = PreferencesUtils.getBoolean(Constant.FIRST_LOGIN_GUIDE, false)
+            if (showGuide) {
+                LogUtils.d("显示首次登录 引导提示")
+                // 显示引导
+                showGuideView()
+                // 首次登录引导显示一次，然后就置为false，在设置中可重置
+                PreferencesUtils.putBoolean(Constant.FIRST_LOGIN_GUIDE, false)
+            }*/
     }
 
     private fun showGuideView() {
     }
 
     private fun initEvent() {
-        // todo
-        // 下拉菜单 获取点击的周 设置标题栏
-
         // 跳转当前周 图标监听
         toolbar.setOnMenuItemClickListener { item ->
             if (item.itemId == R.id.item_go_current_week) {
@@ -353,7 +338,6 @@ class CourseFragment : Fragment() {
         // 下拉刷新监听
         mSlRefresh.setOnRefreshListener { refreshData() }
 
-        // todo
         // 翻页显示 当前周
         vpCourse.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -416,18 +400,19 @@ class CourseFragment : Fragment() {
             }
 
         // 第几周的下拉监听
-        //todo
         mSpinner.setOnItemSelectedListener { _, position, _, _ -> // 跳转到对应周
             vpCourse.setCurrentItem(position, true)
             LogUtils.d("点击了 下拉菜单 跳转到对应周索引：$position")
         }
+
+
     }
 
     private fun jumpToCurWeek() {
         val curWeekIndex = curWeek - 1
         // 如果是当前周，提示
         if (vpCourse.currentItem == curWeekIndex) {
-            ToastyUtils.shortSuccess(requireContext(), "已在当前周")
+            ToastyUtils.shortSuccess(requireActivity(), "已在当前周")
 
         } else {
             vpCourse.setCurrentItem(curWeekIndex, true)
@@ -493,9 +478,9 @@ class CourseFragment : Fragment() {
         switchShowMooc.setOnCheckedChangeListener { _, isChecked ->
             LogUtils.d("慕课显示按钮 -- > $isChecked")
             if (isChecked) {
-                ToastyUtils.longSuccess(requireContext(), "慕课显示开启，课表下方会显示所选慕课信息")
+                ToastyUtils.longSuccess(requireActivity(), "慕课显示开启，课表下方会显示所选慕课信息")
             } else {
-                ToastyUtils.shortSuccess(requireContext(), "慕课显示已关闭")
+                ToastyUtils.shortSuccess(requireActivity(), "慕课显示已关闭")
             }
 
             enableShowMooc = isChecked
@@ -568,12 +553,11 @@ class CourseFragment : Fragment() {
             for (i in 1..25) {
                 val courseViewBean =
                     CourseViewBean(
-                        allWeekCourse,
+                        allWeekCourse.toMutableList(),
                         weekSet,
-                        singleWeekCourse,
+                        singleWeekCourse.toMutableList(),
                         moocCourse,
                         i,
-                        // todo 不太稳健的方案
                         firstWeekMonDate
                     )
                 tempList.add(courseViewBean)
@@ -598,7 +582,6 @@ class CourseFragment : Fragment() {
      * 初始化当前周
      */
     private fun initCurrentWeek() {
-        // todo
         // 不在周范围 显示第一周
         mCurViewPagerNum = if (curWeek < 1 || curWeek > CourseView.MAX_WEEK) {
             0
@@ -611,7 +594,6 @@ class CourseFragment : Fragment() {
      * 初始化界面
      */
     private fun initView() {
-        // todo
         toolbar = requireActivity().findViewById(R.id.toolbar)
         // 显示 Toolbar 的右侧菜单按钮
         val menu = toolbar.menu
@@ -628,18 +610,10 @@ class CourseFragment : Fragment() {
         }
         LogUtils.d("weekArr: ${weekArr.toList()}")
         mSpinner.setItems(weekArr.toList())
-        //todo
-        // mSpinner.setBackgroundColor(resources.getColor(R.color.colorPrimaryDark, null))
         mSpinner.setDropdownMaxHeight(700)
 
         // 初始化标题栏 只在 registerOnPageChangeCallback 中初始化 从后台切回标题栏不会显示周
         // 在 updateCourse 中初始
-
-        // 更新提示条显示
-        if (newVersionExist) {
-            binding.tvCheckIn.visibility = View.VISIBLE
-        }
-
     }
 
     /**
@@ -655,7 +629,7 @@ class CourseFragment : Fragment() {
 
             val allCourse: String
             try {
-                allCourse = eduRepository.url(URL_WHOLE_WEEK, requireContext());
+                allCourse = eduRepository.url(URL_WHOLE_WEEK, requireActivity());
             } catch (e: Exception) {
                 var message: String = e.message.toString()
                 // 课表刷新有问题情况
@@ -676,9 +650,7 @@ class CourseFragment : Fragment() {
             // LogUtils.d("本地curSemester -- > $curSemester")
             LogUtils.d("爬取curSemester -- > $parseSemester")
 
-            // todo
             var curSemester = ""
-
             withContext(Dispatchers.IO) {
                 requireActivity().dataStore.data.map {
                     curSemester = it[CUR_SEMESTER] ?: ""
@@ -691,7 +663,6 @@ class CourseFragment : Fragment() {
             if (curSemester != parseSemester) {
                 singleWeekCourseViewModel.deleteAll();
                 LogUtils.d("爬取的学期信息与本地不同，清除周课表")
-                // todo  写入新学期信息
                 withContext(Dispatchers.IO) {
                     requireActivity().dataStore.edit { settings ->
                         settings[CUR_SEMESTER] = parseSemester
@@ -741,115 +712,11 @@ class CourseFragment : Fragment() {
                     LogUtils.d("dataStore 设置彩虹模式随机数：$rainbowModeNum")
                 }
             }
-            // 获取到数据就停止刷新的动画，提升用户体验
-            mSlRefresh.isRefreshing = false
+
             updateCourse()
-            ToastyUtils.longSuccess(requireContext(), "课表刷新成功")
+            ToastyUtils.longSuccess(requireActivity(), "课表刷新成功")
         }
-    }
-
-
-/*    object : Thread() {
-        override fun run() {
-            super.run()
-            *//*  val message = Message()
-              message.what = Constant.MSG_REFRESH
-              LogUtils.d("setOnRefreshListener:开始刷新")
-              var allCourse: String? = null
-              val stuInfo: StuInfo = stuInfoViewModel.selectStuInfo()
-              try {
-                  allCourse = EduInfo.getTimeTable(
-                      stuInfo.getStuID().toString(),
-                      stuInfo.getEduPassword(),
-                      Constant.URI_WHOLE_COURSE,
-                      requireContext()
-                  )
-                  LogUtils.d("allCourse == >$allCourse")
-              } catch (e: Exception) {
-                  LogUtils.d("setOnRefreshListener：" + e.message)
-                  // 可能密码错误
-                  if (e.message!!.contains("Unable to resolve host")) {
-                      message.obj = "网络好像不太好，请检查网络"
-                  } else {
-                      message.obj = e.message
-                  }
-              }
-              LogUtils.d("setOnRefreshListener:模拟登录获取完整课表结束")*//*
-            if (allCourse == null) {
-//                    message.obj = "网络好像不太好，再试一次";
-                handler!!.sendMessage(message)
-            } else {
-                *//* val courses: List<Course> = ParseAllWeek.parseAllCourse(allCourse)
-                 // 不为当前学期就删除 所有周课表避免冲突，完整课表下面已经删了，不用担心
-                 val curSemester: String = PreferencesUtils.getString(Constant.CUR_SEMESTER, "")
-                 val parseSemester: String = ParseAllWeek.semester
-                 LogUtils.d("本地curSemester -- > $curSemester")
-                 LogUtils.d("爬取curSemester -- > $parseSemester")
-                 if (TextUtils.isEmpty(parseSemester) && !TextUtils.isEmpty(curSemester)) {
-                     LogUtils.d("爬取的学期信息为空，可能为假期")
-                 } else if (curSemester != parseSemester) {
-                     // 爬取的学期信息与本地不同，清除周课表
-                     singleWeekCourseViewModel.deleteOneWeekCourse()
-                     LogUtils.d("curSemester 爬取的学期信息与本地不同，清除周课表结束")
-                     // 写入学期信息
-                     PreferencesUtils.putString(Constant.CUR_SEMESTER, ParseAllWeek.semester)
-                 }
-                 LogUtils.d("setOnRefreshListener:解析完整课表结束")
-                 if (courses.isEmpty()) {
-                     message.obj = "没有解析到完整课表\n可能是放假啦~"
-                     handler!!.sendMessage(message)
-                     return
-                 }*//*
-                // 先删除数据库 完整课表
-                allWeekCourseViewModel.deleteAllWeekCourse()
-                // 加载完整课表填充颜色
-                for (cou in courses) {
-                    if (cou.getCouColor() == null) {
-                        // 这里的courses是模拟登录获取的，所有color为null，所以每次都刷新颜色
-                        cou.setCouColor(cou.getCouID().intValue())
-                    }
-                    // 填充完颜色将课程写入数据库
-                    allWeekCourseViewModel.insertAllWeekCourse(cou)
-                }
-                try {
-                    // 传入完整课表 用来匹配颜色和课程信息
-                    getOneWeekCou(courses)
-                } catch (e: Exception) {
-                    message.obj = e.message
-                }
-                LogUtils.d("setOnRefreshListener:获取完整课表和周课表 写入数据库结束")
-                message.obj = "ok"
-                handler!!.sendMessage(message)
-            }
-        }
-    }.start()*/
-// }
-
-    /**
-     * Handler接受message
-     */
-    @SuppressLint("HandlerLeak")
-    // todo
-    private fun handler() {
-        /* handler = object : Handler(Looper.getMainLooper()) {
-             override fun handleMessage(msg: Message) {
-                 super.handleMessage(msg)
-                 when (msg.what) {
-                     Constant.MSG_REFRESH -> {
-                         var msgStr = msg.obj as String
-
-                     }
-                     Constant.STOP_REFRESH -> mSlRefresh.setRefreshing(false)
-                     Constant.MSG_COOLAPKID_SUCCESS -> {
-                         val currVersion: String = VersionUtils.getVersionCode(requireActivity())
-                         if (id != currVersion) {
-                             binding.tvCheckIn.setVisibility(View.VISIBLE)
-                         }
-                     }
-                 }
-             }
-
-         }*/
+        mSlRefresh.isRefreshing = false
     }
 
     /**
@@ -865,7 +732,7 @@ class CourseFragment : Fragment() {
 
             // 先获取当前周课课程
             var oneWeekCouStr: String
-            oneWeekCouStr = eduRepository.url(URL_ONE_WEEK, requireContext());
+            oneWeekCouStr = eduRepository.url(URL_ONE_WEEK, requireActivity());
 
             if (oneWeekCouStr.isEmpty() || oneWeekCouStr.contains("只能查最近几周的课表")) {
                 throw Exception("没有查询到周课表信息")
@@ -881,8 +748,6 @@ class CourseFragment : Fragment() {
             val couList: MutableList<SingleWeekCourse> = ArrayList(oneWeekCourList)
 
             // 设置当前周
-            // todo
-            // Utils.setFirstWeekPref(curWeek)
             firstWeekMon = DateUtils.getFirstWeekMon(curWeek, LocalDate.now()).toString()
             LogUtils.d("第一周星期一：$firstWeekMon")
             CoroutineScope(Dispatchers.IO).launch {
@@ -920,7 +785,7 @@ class CourseFragment : Fragment() {
                 oneWeekCouStr = eduRepository.url(
                     URL_ONE_WEEK,
                     mapOf(URL_SINGLE_WEEK_KEY to (curWeek + week).toString()),
-                    requireContext()
+                    requireActivity()
                 );
 
                 oneWeekCourList = ParseSingleWeek.parseCourse(oneWeekCouStr)

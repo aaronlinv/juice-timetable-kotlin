@@ -49,7 +49,6 @@ class EduRepository {
                     if (e is UnknownHostException) {
                         throw Exception("网络不太好，检查一下网络吧")
                     }
-                    // throw  e
                 }
             }
 

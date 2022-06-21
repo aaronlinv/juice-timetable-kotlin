@@ -2,12 +2,10 @@ package com.juice.timetable.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.juice.timetable.data.source.SingleWeekCourse
 import com.juice.timetable.data.source.local.JuiceDatabase
 import com.juice.timetable.repo.SingleWeekCourseRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SingleWeekCourseViewModel(val app: Application) : ViewModel() {
@@ -31,9 +29,8 @@ class SingleWeekCourseViewModel(val app: Application) : ViewModel() {
     /**
      * 获取第几周，第几天的课程
      */
-    // todo
-    fun getSomeDay(dayOfWeek: Int, week: Int) {
-        viewModelScope.launch {
+    suspend fun getSomeDay(dayOfWeek: Int, week: Int) {
+        return withContext(Dispatchers.IO) {
             singleWeekCourseRepository.getSomeDay(dayOfWeek, week)
         }
     }

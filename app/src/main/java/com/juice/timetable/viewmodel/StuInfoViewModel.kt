@@ -2,12 +2,10 @@ package com.juice.timetable.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.juice.timetable.data.source.StuInfo
 import com.juice.timetable.data.source.local.JuiceDatabase
 import com.juice.timetable.repo.StuInfoRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class StuInfoViewModel(val app: Application) : ViewModel() {
@@ -16,25 +14,14 @@ class StuInfoViewModel(val app: Application) : ViewModel() {
 
     val stuInfo = stuInfoRepository.getLiveData()
 
-    // val dataLoading: LiveData<Boolean> = _dataLoading
-    //
-    // fun refresh() {
-    //     _dataLoading.value = true
-    //     viewModelScope.launch {
-    //         tasksRepository.refreshTasks()
-    //         _dataLoading.value = false
-    //     }
-    // }
-
-
     suspend fun getStuInfo(): StuInfo? {
         return withContext(Dispatchers.IO) {
             stuInfoRepository.get()
         }
     }
 
-    fun add(stuInfo: StuInfo) {
-        viewModelScope.launch {
+    suspend fun add(stuInfo: StuInfo) {
+        return withContext(Dispatchers.IO) {
             stuInfoRepository.add(stuInfo)
         }
     }
