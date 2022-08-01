@@ -22,6 +22,8 @@ const val FULL_URI_CUR_WEEK = "https://jwc.fdzcxy.edu.cn/kb/zkb_xs.asp"
 
 // 橙汁的酷安地址
 const val URI_COOL_APK = "https://www.coolapk.com/apk/com.juice.timetable"
+const val URI_GITHUB = "https://github.com/aaronlinv/juice-timetable-kotlin"
+const val URI_EMAIL = "mailto:aaronlinv@outlook.com"
 
 interface EduService {
     // 动态获取指定 url 内容

@@ -12,5 +12,9 @@
     <color name="light_white">#F5F5F5</color>
     <color name="transparent">#00000000</color>
     <color name="toasty_green">#62a565</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+    <color name="blue">#408aec</color>
+    <color name="widgetFont">#2f88ff</color>
 
 </resources>

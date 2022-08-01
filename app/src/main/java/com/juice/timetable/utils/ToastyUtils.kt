@@ -23,6 +23,28 @@ object ToastyUtils {
         Toasty.success(context, info, Toasty.LENGTH_SHORT).show()
     }
 
+    fun longSuccess(context: Context, drawable: Int, info: String) {
+        success(context, drawable, info, Toasty.LENGTH_LONG)
+    }
+
+    fun shortSuccess(context: Context, drawable: Int, info: String) {
+        success(context, drawable, info, Toasty.LENGTH_SHORT)
+    }
+
+    private fun success(context: Context, drawable: Int, info: String, length: Int) {
+        Toasty.custom(
+            context,
+            info,
+            context.getDrawable(drawable),
+            context.getColor(R.color.toasty_green),
+            Color.WHITE,
+            length,
+            true,
+            true
+        ).show()
+        Toasty.Config.reset()
+    }
+
     fun warn(context: Context, info: String) {
         Toasty.custom(
             context,
@@ -31,28 +53,6 @@ object ToastyUtils {
             Color.RED,
             Color.WHITE,
             Toasty.LENGTH_LONG,
-            true,
-            true
-        ).show()
-        Toasty.Config.reset()
-    }
-
-    fun longSuccess(context: Context, info: String) {
-        success(context, info, Toasty.LENGTH_LONG)
-    }
-
-    fun shortSuccess(context: Context, info: String) {
-        success(context, info, Toasty.LENGTH_SHORT)
-    }
-
-    private fun success(context: Context, info: String, length: Int) {
-        Toasty.custom(
-            context,
-            info,
-            context.getDrawable(R.drawable.ic_course),
-            context.getColor(R.color.toasty_green),
-            Color.WHITE,
-            length,
             true,
             true
         ).show()

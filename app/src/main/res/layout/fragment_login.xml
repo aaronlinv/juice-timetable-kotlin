@@ -92,7 +92,7 @@
             android:ems="10"
             android:hint="@string/et_sno"
             android:importantForAutofill="no"
-            android:inputType="number|textPersonName"
+            android:inputType="text"
             android:maxLength="9"
             app:backgroundTint="@color/light_juice"
             app:layout_constraintBottom_toTopOf="@+id/guideline2"

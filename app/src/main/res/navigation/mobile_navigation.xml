@@ -17,28 +17,22 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_nav_home_to_courseWebViewFragment"
-            app:destination="@id/courseWebViewFragment" />
+            app:destination="@id/nav_courseWebView" />
     </fragment>
 
-    <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.juice.timetable.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
-
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.juice.timetable.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
     <fragment
         android:id="@+id/nav_login"
         android:name="com.juice.timetable.ui.login.LoginFragment"
         android:label="@string/menu_login"
         tools:layout="@layout/fragment_login" />
     <fragment
-        android:id="@+id/courseWebViewFragment"
+        android:id="@+id/nav_courseWebView"
         android:name="com.juice.timetable.ui.course.CourseWebViewFragment"
         android:label="@string/menu_course_web_view"
         tools:layout="@layout/fragment_course_web_view" />
+    <fragment
+        android:id="@+id/nav_about"
+        android:name="com.juice.timetable.ui.about.AboutFragment"
+        android:label="@string/menu_about"
+        tools:layout="@layout/fragment_about" />
 </navigation>

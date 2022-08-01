@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.about.AboutFragment">
+
+        <com.juice.timetable.ui.about.RippleLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:paddingTop="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/icon_round"
+                    android:layout_width="90dp"
+                    android:layout_height="76dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/juice_icon_round"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.032" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/app_name"
+                    android:textColor="@color/primary_text"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/icon_round" />
+
+                <TextView
+                    android:id="@+id/tv_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/secondary_text"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView"
+                    app:layout_constraintVertical_bias="0.01"
+                    tools:text="2.0.0" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_version">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <Button
+                    android:id="@+id/checkUpdatesButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:padding="4dp"
+                    android:text="@string/check_for_updates"
+                    android:textColor="@color/blue"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_version" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        app:cardCornerRadius="12dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/tv_thanks"
+                                android:layout_width="wrap_content"
+                                android:layout_height="0dp"
+                                android:layout_marginTop="8dp"
+                                android:padding="8dp"
+                                android:text="@string/thanks"
+                                android:textAlignment="viewStart"
+                                android:textColor="@color/secondary_text"
+                                android:textSize="16sp"
+                                app:layout_constraintStart_toStartOf="@+id/guideline26"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_thanks_list"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="16dp"
+                                android:padding="8dp"
+                                android:text="@string/thanks_list"
+                                app:layout_constraintBottom_toTopOf="@+id/tv_feedback"
+                                app:layout_constraintEnd_toStartOf="@+id/guideline28"
+                                app:layout_constraintStart_toStartOf="@+id/tv_thanks"
+                                app:layout_constraintTop_toBottomOf="@+id/tv_thanks" />
+
+                            <androidx.constraintlayout.widget.Guideline
+                                android:id="@+id/guideline26"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.053164557" />
+
+                            <androidx.constraintlayout.widget.Guideline
+                                android:id="@+id/guideline28"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.95" />
+
+                            <TextView
+                                android:id="@+id/tv_feedback"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                android:padding="8dp"
+                                android:text="@string/feedback"
+                                android:textAlignment="center"
+                                android:textColor="@color/widgetFont"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toTopOf="@+id/guideline29"
+                                app:layout_constraintEnd_toStartOf="@+id/tv_github"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toStartOf="@+id/guideline26"
+                                app:layout_constraintTop_toTopOf="@+id/guideline29"
+                                tools:ignore="TouchTargetSizeCheck" />
+
+                            <androidx.constraintlayout.widget.Guideline
+                                android:id="@+id/guideline29"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                app:layout_constraintGuide_percent="0.85" />
+
+                            <TextView
+                                android:id="@+id/tv_github"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                android:padding="8dp"
+                                android:text="@string/github"
+                                android:textAlignment="center"
+                                android:textColor="@color/widgetFont"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toTopOf="@+id/guideline29"
+                                app:layout_constraintEnd_toStartOf="@+id/tv_cool_apk"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toEndOf="@+id/tv_feedback"
+                                app:layout_constraintTop_toTopOf="@+id/guideline29" />
+
+                            <TextView
+                                android:id="@+id/tv_cool_apk"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                android:padding="8dp"
+                                android:text="@string/cool_apk"
+                                android:textAlignment="center"
+                                android:textColor="@color/widgetFont"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toTopOf="@+id/guideline29"
+                                app:layout_constraintEnd_toStartOf="@+id/guideline28"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toEndOf="@+id/tv_github"
+                                app:layout_constraintTop_toTopOf="@+id/guideline29" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        app:cardCornerRadius="12dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/tv_openSource"
+                                android:layout_width="wrap_content"
+                                android:layout_height="0dp"
+                                android:layout_marginTop="8dp"
+                                android:padding="8dp"
+                                android:text="@string/openSource"
+                                android:textAlignment="viewStart"
+                                android:textColor="@color/secondary_text"
+                                android:textSize="16sp"
+                                app:layout_constraintStart_toStartOf="@+id/guideline22"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_github_lib"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="16dp"
+                                android:padding="8dp"
+                                android:text="@string/github_lib"
+                                app:layout_constraintBottom_toTopOf="@+id/tv_developer"
+                                app:layout_constraintEnd_toStartOf="@+id/guideline25"
+                                app:layout_constraintHorizontal_bias="1.0"
+                                app:layout_constraintStart_toStartOf="@+id/tv_openSource"
+                                app:layout_constraintTop_toBottomOf="@+id/tv_openSource" />
+
+                            <androidx.constraintlayout.widget.Guideline
+                                android:id="@+id/guideline22"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.05" />
+
+                            <androidx.constraintlayout.widget.Guideline
+                                android:id="@+id/guideline25"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.95" />
+
+                            <androidx.constraintlayout.widget.Guideline
+                                android:id="@+id/guideline27"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintGuide_percent="0.9"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toStartOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_developer"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                android:padding="8dp"
+                                android:text="@string/developer"
+                                android:textAlignment="center"
+                                android:textColor="@color/widgetFont"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toTopOf="@+id/guideline27"
+                                app:layout_constraintEnd_toStartOf="@+id/guideline25"
+                                app:layout_constraintStart_toStartOf="@+id/guideline22"
+                                app:layout_constraintTop_toTopOf="@+id/guideline27" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+
+                </LinearLayout>
+            </ScrollView>
+
+        </com.juice.timetable.ui.about.RippleLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

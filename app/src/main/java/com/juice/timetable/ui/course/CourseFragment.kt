@@ -171,8 +171,6 @@ class CourseFragment : Fragment() {
         firstGuide()
         // 通知提醒明日课程
         // showTomorrowCourse();
-        // //是否开启自动检查更新
-        // checkUpdate()
 
 
         eduRepository = EduRepository()
@@ -264,6 +262,8 @@ class CourseFragment : Fragment() {
             }
 
             val currVersion = getVersionCode(requireActivity())
+            LogUtils.d("本地 id --> $currVersion")
+
             if (version != currVersion) {
                 binding.tvCheckIn.visibility = View.VISIBLE
             }
@@ -412,7 +412,7 @@ class CourseFragment : Fragment() {
         val curWeekIndex = curWeek - 1
         // 如果是当前周，提示
         if (vpCourse.currentItem == curWeekIndex) {
-            ToastyUtils.shortSuccess(requireActivity(), "已在当前周")
+            ToastyUtils.shortSuccess(requireActivity(), R.drawable.ic_course, "已在当前周")
 
         } else {
             vpCourse.setCurrentItem(curWeekIndex, true)
@@ -478,9 +478,13 @@ class CourseFragment : Fragment() {
         switchShowMooc.setOnCheckedChangeListener { _, isChecked ->
             LogUtils.d("慕课显示按钮 -- > $isChecked")
             if (isChecked) {
-                ToastyUtils.longSuccess(requireActivity(), "慕课显示开启，课表下方会显示所选慕课信息")
+                ToastyUtils.longSuccess(
+                    requireActivity(),
+                    R.drawable.ic_course,
+                    "慕课显示开启，课表下方会显示所选慕课信息"
+                )
             } else {
-                ToastyUtils.shortSuccess(requireActivity(), "慕课显示已关闭")
+                ToastyUtils.shortSuccess(requireActivity(), R.drawable.ic_course, "慕课显示已关闭")
             }
 
             enableShowMooc = isChecked
@@ -714,7 +718,7 @@ class CourseFragment : Fragment() {
             }
 
             updateCourse()
-            ToastyUtils.longSuccess(requireActivity(), "课表刷新成功")
+            ToastyUtils.longSuccess(requireActivity(), R.drawable.ic_course, "课表刷新成功")
         }
         mSlRefresh.isRefreshing = false
     }
