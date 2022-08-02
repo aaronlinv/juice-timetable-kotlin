@@ -56,6 +56,14 @@
 
     <string name="menu_course_web_view">源课表</string>
 
+    <!--    tools-->
+    <string name="menu_tools">工具箱</string>
+    <string name="menu_grade">考试成绩</string>
+    <string name="menu_exam">考场安排</string>
+    <string name="menu_expect">后续功能尽情期待…</string>
+
+    <!--    exam-->
+
     <!--about-->
     <string name="check_for_updates">检查更新</string>
     <string name="new_version_dialog_title">有新版可用，是否前往下载？</string>
@@ -83,5 +91,7 @@
         \ncom.jaredrummler:material-spinner
         \ncom.github.f0ris.sweetalert:library
     </string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
