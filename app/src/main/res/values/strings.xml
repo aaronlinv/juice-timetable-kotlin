@@ -1,13 +1,9 @@
 <resources>
     <string name="app_name">橙汁</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
 
     <string name="error_network">网络不太好，检查一下网络吧</string>
+    <string name="empty">暂无数据</string>
+    <string name="refresh_success">数据刷新成功</string>
     <!--    menu-->
     <string name="menu_home">首页</string>
     <string name="menu_about">关于</string>
@@ -56,13 +52,18 @@
 
     <string name="menu_course_web_view">源课表</string>
 
-    <!--    tools-->
-    <string name="menu_tools">工具箱</string>
-    <string name="menu_grade">考试成绩</string>
-    <string name="menu_exam">考场安排</string>
-    <string name="menu_expect">后续功能尽情期待…</string>
-
     <!--    exam-->
+    <string name="menu_exam">考场安排</string>
+    <string name="exam_year">学年</string>
+    <string name="exam_type">学期</string>
+    <string name="credits">学分</string>
+
+    <!--    grade-->
+    <string name="menu_grade">考试成绩</string>
+    <string name="syngrade">综合成绩</string>
+    <string name="unigrade">统考成绩</string>
+    <string name="need_evaluation">成绩测评后才能查询成绩</string>
+
 
     <!--about-->
     <string name="check_for_updates">检查更新</string>
@@ -91,7 +92,5 @@
         \ncom.jaredrummler:material-spinner
         \ncom.github.f0ris.sweetalert:library
     </string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

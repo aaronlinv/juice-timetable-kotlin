@@ -145,6 +145,8 @@ class MainActivity : BaseActivity() {
                 R.id.nav_home, R.id.nav_about
             ), drawerLayout
         )
+        // 侧边栏彩色图标
+        navView.itemIconTintList = null
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 

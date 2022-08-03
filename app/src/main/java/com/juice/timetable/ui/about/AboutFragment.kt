@@ -132,7 +132,7 @@ class AboutFragment : Fragment() {
                     .setCancelClickListener { sDialog -> sDialog.cancel() }
                     .show()
             } else {
-                ToastyUtils.shortSuccess(requireActivity(), R.drawable.ic_about, "已经是最新版本")
+                ToastyUtils.shortSuccess(requireActivity(), R.drawable.ic_menu_about, "已经是最新版本")
             }
         }
     }

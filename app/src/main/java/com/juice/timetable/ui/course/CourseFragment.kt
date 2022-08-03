@@ -170,7 +170,7 @@ class CourseFragment : Fragment() {
         // 首次打开引导
         firstGuide()
         // 通知提醒明日课程
-        // showTomorrowCourse();
+        // showTomorrowCourse()
 
 
         eduRepository = EduRepository()
@@ -412,7 +412,7 @@ class CourseFragment : Fragment() {
         val curWeekIndex = curWeek - 1
         // 如果是当前周，提示
         if (vpCourse.currentItem == curWeekIndex) {
-            ToastyUtils.shortSuccess(requireActivity(), R.drawable.ic_course, "已在当前周")
+            ToastyUtils.shortSuccess(requireActivity(), R.drawable.ic_mune_course, "已在当前周")
 
         } else {
             vpCourse.setCurrentItem(curWeekIndex, true)
@@ -462,7 +462,7 @@ class CourseFragment : Fragment() {
         popupWindow.isTouchable = true
         popupWindow.setTouchInterceptor { _, _ -> // false 不拦截这个事件
             // 拦截了PopUpWindow 的onTouchEvent就不会被调用
-            // popupWindow.dismiss();
+            // popupWindow.dismiss()
             false
         }
 
@@ -480,11 +480,11 @@ class CourseFragment : Fragment() {
             if (isChecked) {
                 ToastyUtils.longSuccess(
                     requireActivity(),
-                    R.drawable.ic_course,
+                    R.drawable.ic_mune_course,
                     "慕课显示开启，课表下方会显示所选慕课信息"
                 )
             } else {
-                ToastyUtils.shortSuccess(requireActivity(), R.drawable.ic_course, "慕课显示已关闭")
+                ToastyUtils.shortSuccess(requireActivity(), R.drawable.ic_mune_course, "慕课显示已关闭")
             }
 
             enableShowMooc = isChecked
@@ -572,7 +572,7 @@ class CourseFragment : Fragment() {
             LogUtils.d("mCourseViewBeanList size -- > " + mCourseViewBeanList.size)
 
             // 原来的思路是每次从数据库获取 到新的BeanList 直接submitList
-            // mCourseViewListAdapter.submitList(mCourseViewBeanList);
+            // mCourseViewListAdapter.submitList(mCourseViewBeanList)
             // 这样带来的问题，每次下拉刷新，ViewPager都会强制跳到第一页，无论怎么etCurrentItem
 
             // 通知数据已经修改
@@ -625,7 +625,7 @@ class CourseFragment : Fragment() {
      */
     private fun refreshData() {
         CoroutineScope(Dispatchers.Main).launch {
-            val stuInfo = stuInfoViewModel.getStuInfo();
+            val stuInfo = stuInfoViewModel.getStuInfo()
             if (stuInfo == null) {
                 LogUtils.i("用户信息为空，中止刷新课程数据")
                 return@launch
@@ -633,7 +633,7 @@ class CourseFragment : Fragment() {
 
             val allCourse: String
             try {
-                allCourse = eduRepository.url(URL_WHOLE_WEEK, requireActivity());
+                allCourse = eduRepository.url(URL_WHOLE_WEEK, requireActivity())
             } catch (e: Exception) {
                 var message: String = e.message.toString()
                 // 课表刷新有问题情况
@@ -648,7 +648,7 @@ class CourseFragment : Fragment() {
                 ToastyUtils.warn(requireActivity(), "获取课表信息失败")
             }
             LogUtils.d("获取完整课表结束，准备开始解析")
-            val courses = ParseAllWeek.parseCourse(allCourse);
+            val courses = ParseAllWeek.parseCourse(allCourse)
 
             val parseSemester: String = ParseAllWeek.semester
             // LogUtils.d("本地curSemester -- > $curSemester")
@@ -665,7 +665,7 @@ class CourseFragment : Fragment() {
 
             // 不为当前学期就删除 所有周课表避免冲突，完整课表下面已经删了，不用担心
             if (curSemester != parseSemester) {
-                singleWeekCourseViewModel.deleteAll();
+                singleWeekCourseViewModel.deleteAll()
                 LogUtils.d("爬取的学期信息与本地不同，清除周课表")
                 withContext(Dispatchers.IO) {
                     requireActivity().dataStore.edit { settings ->
@@ -718,7 +718,7 @@ class CourseFragment : Fragment() {
             }
 
             updateCourse()
-            ToastyUtils.longSuccess(requireActivity(), R.drawable.ic_course, "课表刷新成功")
+            ToastyUtils.longSuccess(requireActivity(), R.drawable.ic_mune_course, "课表刷新成功")
         }
         mSlRefresh.isRefreshing = false
     }
@@ -736,7 +736,7 @@ class CourseFragment : Fragment() {
 
             // 先获取当前周课课程
             var oneWeekCouStr: String
-            oneWeekCouStr = eduRepository.url(URL_ONE_WEEK, requireActivity());
+            oneWeekCouStr = eduRepository.url(URL_ONE_WEEK, requireActivity())
 
             if (oneWeekCouStr.isEmpty() || oneWeekCouStr.contains("只能查最近几周的课表")) {
                 throw Exception("没有查询到周课表信息")
@@ -790,7 +790,7 @@ class CourseFragment : Fragment() {
                     URL_ONE_WEEK,
                     mapOf(URL_SINGLE_WEEK_KEY to (curWeek + week).toString()),
                     requireActivity()
-                );
+                )
 
                 oneWeekCourList = ParseSingleWeek.parseCourse(oneWeekCouStr)
                 LogUtils.d("获取第 <" + (curWeek + week) + "> 周课表 -- > " + oneWeekCourList)
