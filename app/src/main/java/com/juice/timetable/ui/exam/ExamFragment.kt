@@ -11,7 +11,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.juice.timetable.CUR_SEMESTER
 import com.juice.timetable.R
 import com.juice.timetable.api.URI_EXAM
@@ -26,7 +25,6 @@ import com.juice.timetable.utils.ToastyUtils
 import com.juice.timetable.viewmodel.ExamViewModel
 import com.juice.timetable.viewmodel.JuiceViewModelFactory
 import com.juice.timetable.viewmodel.StuInfoViewModel
-import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
@@ -62,7 +60,7 @@ class ExamFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Refresh()
+        refresh()
     }
 
     override fun onCreateView(
@@ -90,18 +88,16 @@ class ExamFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         filterExamList = examViewModel.examLive
-        LogUtils.d("onStart,filterExamList--> $filterExamList")
-
         filterExamList?.observe(viewLifecycleOwner) {
-            LogUtils.d("onStart,exams--> $it")
             examRecycleViewAdapter.examArrayList = it
             examRecycleViewAdapter.notifyDataSetChanged()
         }
-        binding.examRefresh.isRefreshing = false
+//        binding.examRefresh.isRefreshing = false
     }
 
     private fun getExamInfo(year: String, type: String) {
         CoroutineScope(Dispatchers.Main).launch {
+            binding.examRefresh.isRefreshing = true
             try {
                 //先清空表
                 examViewModel.deleteAllExam()
@@ -118,7 +114,6 @@ class ExamFragment : Fragment() {
                 ToastyUtils.warn(requireActivity(), message)
                 return@launch
             }
-
             binding.examRefresh.isRefreshing = false
         }
     }
@@ -126,40 +121,34 @@ class ExamFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(com.juice.timetable.R.menu.exam_bar, menu)
-        val searchView =
-            menu.findItem(com.juice.timetable.R.id.app_bar_exam_search).actionView as SearchView
+        inflater.inflate(R.menu.exam_bar, menu)
+        val searchView = menu.findItem(R.id.app_bar_exam_search).actionView as SearchView
         searchView.maxWidth = 1000
-        searchView.setOnQueryTextListener(
-            object : SearchView.OnQueryTextListener {
-                //确定时候改变
-                override fun onQueryTextSubmit(query: String): Boolean {
-                    return false
-                }
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            //确定时候改变
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return false
+            }
 
-                override fun onQueryTextChange(pattern: String): Boolean {
-                    filterExamList?.removeObservers(requireActivity())
-                    examViewModel.viewModelScope.launch {
-                        filterExamList = examViewModel.findNameWithPattern(pattern)
-                        filterExamList?.observe(requireActivity()) {
-                            LogUtils.d("onQueryTextChange,exams--> $it")
-                            examRecycleViewAdapter.examArrayList = it
-                            examRecycleViewAdapter.notifyDataSetChanged()
-                        }
+            override fun onQueryTextChange(pattern: String): Boolean {
+                filterExamList?.removeObservers(viewLifecycleOwner)
+                examViewModel.viewModelScope.launch {
+                    filterExamList = examViewModel.findNameWithPattern(pattern)
+                    filterExamList?.observe(viewLifecycleOwner) {
+                        examRecycleViewAdapter.examArrayList = it
+                        examRecycleViewAdapter.notifyDataSetChanged()
                     }
-                    return true
                 }
-            })
+                return false
+            }
+        })
     }
 
-    private fun Refresh() {
-        binding.examRefresh.isRefreshing = true
+    private fun refresh() {
         // 下拉刷新监听
         binding.examRefresh.setOnRefreshListener() {
             getExamInfo(year, type)
-            ToastyUtils.s(
-                requireActivity(), resources.getString(R.string.refresh_success)
-            )
+            ToastyUtils.s(requireActivity(), resources.getString(R.string.refresh_success))
         }
 
     }
@@ -233,8 +222,6 @@ class ExamFragment : Fragment() {
                 val tv = view as TextView
                 tv.textSize = 16f
                 year = mItemsYear[position].toString()
-                binding.examRefresh.isRefreshing = true
-
                 getExamInfo(year, type)
             }
 
@@ -250,7 +237,6 @@ class ExamFragment : Fragment() {
                 val tv = view as TextView
                 tv.textSize = 16f
                 type = mItemsType[position]
-                binding.examRefresh.isRefreshing = true
                 getExamInfo(year, type)
             }
 
@@ -259,5 +245,3 @@ class ExamFragment : Fragment() {
         }
     }
 }
-
-

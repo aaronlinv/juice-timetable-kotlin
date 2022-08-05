@@ -8,14 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.juice.timetable.R
 import com.juice.timetable.data.source.Exam
-import com.juice.timetable.utils.LogUtils
 
 
 class ExamRecycleViewAdapter() : RecyclerView.Adapter<ExamRecycleViewAdapter.ExamViewHolder>() {
     var examArrayList: List<Exam> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExamViewHolder {
-
         return ExamViewHolder.from(parent, viewType)
     }
 
@@ -73,7 +71,6 @@ class ExamRecycleViewAdapter() : RecyclerView.Adapter<ExamRecycleViewAdapter.Exa
 
         companion object {
             fun from(parent: ViewGroup, viewType: Int): ExamViewHolder {
-                LogUtils.d("viewType--> $viewType")
                 val layoutInflate = LayoutInflater.from(parent.context)
                 val layoutNumber: Int = if (viewType == 0) {
                     R.layout.empty_recyclerview

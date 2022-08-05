@@ -142,7 +142,7 @@ class MainActivity : BaseActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_about
+                R.id.nav_home, R.id.nav_about, R.id.nav_grade, R.id.nav_exam
             ), drawerLayout
         )
         // 侧边栏彩色图标
@@ -155,7 +155,7 @@ class MainActivity : BaseActivity() {
         // https://stackoverflow.com/a/58681944
         navView.setNavigationItemSelectedListener {
 
-            val id: Int = it.getItemId()
+            val id: Int = it.itemId
             if (id == R.id.nav_logout) {
                 // 确认提示，是否登出
                 SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
@@ -263,11 +263,6 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        // menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
 
     override fun onSupportNavigateUp(): Boolean {
         val navHostFragment =

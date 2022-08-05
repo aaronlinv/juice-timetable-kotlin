@@ -12,7 +12,7 @@ import java.net.UnknownHostException
 class ExamRepository(private val db: JuiceDatabase) {
     private var examService: ExamService = ExamService.create()
 
-    fun add(exams: List<Exam>) {
+    fun addAllExam(exams: List<Exam>) {
         db.examDao().insertExam(exams)
     }
 
@@ -21,7 +21,7 @@ class ExamRepository(private val db: JuiceDatabase) {
     }
 
     // 暴露获得 LiveData 的方法
-    fun getLiveData(): LiveData<List<Exam>> {
+    fun getExamLiveData(): LiveData<List<Exam>> {
         return allExam
     }
 

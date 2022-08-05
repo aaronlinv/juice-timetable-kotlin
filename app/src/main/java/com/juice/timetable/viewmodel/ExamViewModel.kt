@@ -12,11 +12,11 @@ import kotlinx.coroutines.withContext
 class ExamViewModel(val app: Application) : ViewModel() {
     private var examRepository: ExamRepository = ExamRepository(JuiceDatabase.getDatabase(app))
 
-    val examLive = examRepository.getLiveData()
+    val examLive = examRepository.getExamLiveData()
 
     suspend fun addAllExam(exams: List<Exam>) {
         withContext(Dispatchers.IO) {
-            examRepository.add(exams)
+            examRepository.addAllExam(exams)
         }
     }
 

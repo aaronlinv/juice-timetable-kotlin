@@ -4,10 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.juice.timetable.data.source.Course
-import com.juice.timetable.data.source.Exam
-import com.juice.timetable.data.source.SingleWeekCourse
-import com.juice.timetable.data.source.StuInfo
+import com.juice.timetable.data.source.*
 
 /**
  * <pre>
@@ -19,7 +16,14 @@ import com.juice.timetable.data.source.StuInfo
  */
 @Database(
     // 表明数据库中有几张表
-    entities = [StuInfo::class, Course::class, SingleWeekCourse::class, Exam::class],
+    entities = [
+        StuInfo::class,
+        Course::class,
+        SingleWeekCourse::class,
+        Exam::class,
+        SynGrade::class,
+        UniGrade::class,
+        Credit::class],
     // 数据库版本
     version = 1
 )
@@ -28,6 +32,9 @@ abstract class JuiceDatabase : RoomDatabase() {
     abstract fun allWeekCourseDao(): AllWeekCourseDao
     abstract fun singleWeekCourseDao(): SingleWeekCourseDao
     abstract fun examDao(): ExamDao
+    abstract fun synGradeDao(): SynGradeDao
+    abstract fun uniGradeDao(): UniGradeDao
+    abstract fun creditDao(): CreditDao
 
     companion object {
         @Volatile

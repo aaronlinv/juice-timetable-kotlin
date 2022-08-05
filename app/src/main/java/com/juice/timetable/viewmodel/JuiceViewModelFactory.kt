@@ -22,6 +22,8 @@ class JuiceViewModelFactory(val app: Application) : ViewModelProvider.Factory {
             return AllWeekCourseViewModel(app) as T
         } else if (modelClass.isAssignableFrom(ExamViewModel::class.java)) {
             return ExamViewModel(app) as T
+        } else if (modelClass.isAssignableFrom(GradeViewModel::class.java)) {
+            return GradeViewModel(app) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel Class")

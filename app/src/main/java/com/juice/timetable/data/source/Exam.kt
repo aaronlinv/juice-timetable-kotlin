@@ -5,7 +5,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "exam")
 class Exam {
-
     @PrimaryKey
     var examId: Int? = null
 
@@ -47,7 +46,5 @@ class Exam {
                 "arrangement=$arrangement, " +
                 "classGrade=$classGrade)"
     }
-
-
 
 }

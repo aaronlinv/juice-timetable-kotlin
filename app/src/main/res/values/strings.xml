@@ -60,8 +60,9 @@
 
     <!--    grade-->
     <string name="menu_grade">考试成绩</string>
-    <string name="syngrade">综合成绩</string>
-    <string name="unigrade">统考成绩</string>
+    <string name="syn_grade">综合成绩</string>
+    <string name="uni_grade">统考成绩</string>
+    <string name="credit">学分</string>
     <string name="need_evaluation">成绩测评后才能查询成绩</string>
 
 
