@@ -19,7 +19,6 @@ const val URL_ONE_WEEK = "kb/zkb_xs.asp"
 const val URL_WHOLE_WEEK = "kb/kb_xs.asp"
 const val URL_SINGLE_WEEK_KEY = "week1"
 const val FULL_URI_CUR_WEEK = "https://jwc.fdzcxy.edu.cn/kb/zkb_xs.asp"
-
 // 橙汁的酷安地址
 const val URI_COOL_APK = "https://www.coolapk.com/apk/com.juice.timetable"
 

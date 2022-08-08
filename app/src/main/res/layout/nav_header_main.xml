@@ -21,6 +21,7 @@
         app:srcCompat="@drawable/juice_icon_round" />
 
     <TextView
+        android:id="@+id/tv_juice"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

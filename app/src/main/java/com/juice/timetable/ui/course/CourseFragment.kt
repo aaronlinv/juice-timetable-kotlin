@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.PopupWindow
 import android.widget.Switch
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.datastore.preferences.core.edit
 import androidx.fragment.app.Fragment
@@ -17,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import cn.pedant.SweetAlert.SweetAlertDialog
+import com.google.android.material.navigation.NavigationView
 import com.jaredrummler.materialspinner.MaterialSpinner
 import com.juice.timetable.*
 import com.juice.timetable.api.URI_COOL_APK
@@ -46,6 +48,8 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 import java.util.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 class CourseFragment : Fragment() {
     companion object {
@@ -663,6 +667,15 @@ class CourseFragment : Fragment() {
                 LogUtils.d("读取 DataStore 的当前学期，并初始化变量：$curSemester")
             }
 
+            // 侧边栏姓名
+            val navView: NavigationView = requireActivity().findViewById(R.id.nav_view)
+            val juiceTextView: TextView = navView.getHeaderView(0).findViewById(R.id.tv_juice)
+            val p: Pattern = Pattern.compile("(?<=期).*?(?=同)")
+            val m: Matcher = p.matcher(curSemester)
+            while (m.find()) {
+                juiceTextView.text = m.group(0)
+            }
+
             // 不为当前学期就删除 所有周课表避免冲突，完整课表下面已经删了，不用担心
             if (curSemester != parseSemester) {
                 singleWeekCourseViewModel.deleteAll()
@@ -696,6 +709,7 @@ class CourseFragment : Fragment() {
                 // 传入完整课表 用来匹配颜色和课程信息
                 getOneWeekCou(stuInfo, courses)
             } catch (e: Exception) {
+                LogUtils.d("getOneWeekCou--> ${e.message.toString()}")
                 ToastyUtils.warn(requireActivity(), e.message.toString())
                 return@launch
             }

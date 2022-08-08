@@ -64,7 +64,20 @@
     <string name="uni_grade">统考成绩</string>
     <string name="credit">学分</string>
     <string name="need_evaluation">成绩测评后才能查询成绩</string>
-
+    <!--    setting-->
+    <string name="menu_settings">设置</string>
+    <string name="dark_theme">跟随系统深色模式</string>
+    <string name="dark_theme_summary_off">开启后，将随系统打开或关闭深色模式</string>
+    <string name="dark_theme_summary_on">仅支持Android 10.0及以上</string>
+    <string name="preferenceCategory_preference">个性化</string>
+    <string name="preferenceCategory_other">其他</string>
+    <string name="sync_title">自动检查更新</string>
+    <string name="attachment_title">自动下载</string>
+    <string name="attachment_summary_on">每7天检查一次</string>
+    <string name="attachment_summary_off">关闭</string>
+    <string name="preferenceCategory_notify">通知</string>
+    <string name="notify_title">提醒明天上的课</string>
+    <string name="notify_time_title">选择一个时间</string>
 
     <!--about-->
     <string name="check_for_updates">检查更新</string>
@@ -93,5 +106,6 @@
         \ncom.jaredrummler:material-spinner
         \ncom.github.f0ris.sweetalert:library
     </string>
+
 
 </resources>

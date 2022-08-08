@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.preferences.core.edit
@@ -11,6 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation.findNavController
 import com.dyhdyh.widget.loading.bar.LoadingBar
+import com.google.android.material.navigation.NavigationView
+import com.juice.timetable.CUR_SEMESTER
 import com.juice.timetable.INIT_LOGIN_KEY
 import com.juice.timetable.R
 import com.juice.timetable.data.source.StuInfo
@@ -27,7 +30,12 @@ import com.juice.timetable.viewmodel.SingleWeekCourseViewModel
 import com.juice.timetable.viewmodel.StuInfoViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 
 class LoginFragment : Fragment() {

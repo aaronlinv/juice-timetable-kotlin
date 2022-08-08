@@ -2,8 +2,8 @@ package com.juice.timetable
 
 import android.content.Context
 import android.os.Bundle
-import android.view.Menu
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.core.view.GravityCompat
 import androidx.datastore.core.DataStore
@@ -147,6 +147,7 @@ class MainActivity : BaseActivity() {
         )
         // 侧边栏彩色图标
         navView.itemIconTintList = null
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
